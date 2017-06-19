@@ -403,7 +403,8 @@ void calcIhs2Mpi(const std::string& hapFile,
                  unsigned long long xsize,
                  unsigned long long ysize,
                  unsigned long long startPos = 0ULL,
-                 unsigned long long endPos = 0ULL)
+                 unsigned long long endPos = 0ULL,
+                 int random_range = 1)
 {
     mpirpc::Manager manager;
     HapMap *hm = nullptr;
@@ -535,10 +536,10 @@ void calcIhs2Mpi(const std::string& hapFile,
                         {
                             delete pre;
                         }
-                        auto start_time = std::chrono::high_resolution_clock::now();
-                        IhsPairJob *res = finder->calcRange(job.first, job.second);
-                        auto end_time = std::chrono::high_resolution_clock::now();
-                        std::cout << "Job " << job.first << "-" << job.second << " took " << std::chrono::duration<double, std::milli>(end_time-start_time).count() << "ms." << std::endl;
+                        //auto start_time = std::chrono::high_resolution_clock::now();
+                        IhsPairJob *res = finder->calcRange(job.first, job.second, random_range);
+                        //auto end_time = std::chrono::high_resolution_clock::now();
+                        //std::cout << "Job " << job.first << "-" << job.second << " took " << std::chrono::duration<double, std::milli>(end_time-start_time).count() << "ms." << std::endl;
                         res->save(outprefix + "." + std::to_string(job.first) + "-" + std::to_string(job.second) + ".dat");
                         ownedJobs.push_back(res);
                         //delete res;
@@ -574,11 +575,11 @@ void calcIhs2Mpi(const std::string& hapFile,
                     {
                         delete pre;
                     }
-                    auto start_time = std::chrono::high_resolution_clock::now();
-                    IhsPairJob *res = finder->calcRange(job.first, job.second);
+                    //auto start_time = std::chrono::high_resolution_clock::now();
+                    IhsPairJob *res = finder->calcRange(job.first, job.second, random_range);
                     res->save(outprefix + "." + std::to_string(job.first) + "-" + std::to_string(job.second) + ".dat");
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    std::cout << "Job " << job.first << "-" << job.second << " took " << std::chrono::duration<double, std::milli>(end_time-start_time).count() << "ms." << std::endl;
+                    //auto end_time = std::chrono::high_resolution_clock::now();
+                    //std::cout << "Job " << job.first << "-" << job.second << " took " << std::chrono::duration<double, std::milli>(end_time-start_time).count() << "ms." << std::endl;
                     ownedJobs.push_back(pre);
                     //delete res;
                 }

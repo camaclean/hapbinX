@@ -56,7 +56,8 @@ int main(int argc, char** argv)
     Argument<unsigned long long> endPos('z', "end-index", "Index to end pair jobs (0 for end)", false, false, 0);
     Argument<unsigned long long> xsize(ArgumentBase::NO_SHORT_OPT, "x-image-size", "Image x dimension size", false, false, 4096);
     Argument<unsigned long long> ysize(ArgumentBase::NO_SHORT_OPT, "y-image-size", "Image y dimension size", false, false, 4096);
-    ArgParse argparse({&help, &hap, &map, &outfile, &cutoff, &minMAF, &sig, &scale, &window, &bufferSize, &jobSize, &numBins, &windowBins, &filternonpoly, &pops, &key, &startPos, &endPos, &xsize, &ysize},
+    Argument<int> random_range('r', "random", "Randomly choose 1/x pairs to calculate", false, false, 1);
+    ArgParse argparse({&help, &hap, &map, &outfile, &cutoff, &minMAF, &sig, &scale, &window, &bufferSize, &jobSize, &numBins, &windowBins, &filternonpoly, &pops, &key, &startPos, &endPos, &xsize, &ysize, &random_range},
                       "Usage: ihs2bin --map input.map --hap input.hap [--ascii] [--out outfile]");
     if (!argparse.parseArguments(argc, argv))
         return 1;
@@ -74,7 +75,7 @@ int main(int argc, char** argv)
         popkey = new PopKey(key.value(), pops.values());
 
     calcIhs2Mpi(hap.value(), map.value(), filternonpoly.value(), popkey, key.value(), pops.values(), cutoff.value(), minMAF.value(), scale.value(), window.value(),
-                bufferSize.value(), sig.value(), jobSize.value(), numBins.value(), windowBins.value(), outfile.value(), xsize.value(), ysize.value(), startPos.value(), endPos.value());
+                bufferSize.value(), sig.value(), jobSize.value(), numBins.value(), windowBins.value(), outfile.value(), xsize.value(), ysize.value(), startPos.value(), endPos.value(), random_range.value());
 
     MPI_Barrier(MPI_COMM_WORLD);
 
