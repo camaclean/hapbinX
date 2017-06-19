@@ -1,5 +1,5 @@
-hapbin
-======
+hapbinX
+=======
 
 `hapbinX` is a modification of the hapbin suite of tools (https://github.com/evotools/hapbin) for calculating an extended version of the [Integrated Haplotype Score (iHS)](http://dx.doi.org/10.1371/journal.pbio.0040072) evolutionary statistic. This new statistic (mmiHS) extends iHS to multiple markers enabling the signatures of selection across pairs of variants to be studied. 
 
