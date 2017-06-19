@@ -56,8 +56,8 @@ For example:
 
 First, check out the hapbin source:
     
-    git clone https://github.com/evotools/hapbin.git
-    cd hapbin/build/
+    git clone https://github.com/evotools/hapbinX.git
+    cd hapbinX/build/
 
 Next, create a `toolchain.cmake` file with the necessary overrides:
 
