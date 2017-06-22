@@ -74,7 +74,7 @@ int main(int argc, char** argv)
         std::vector<std::string> split = splitString(line, ' ');
         if (split.size() == 1)
             split = splitString(line, '\t');
-        if (split.size() == 3) {
+        if (split.size() == 2) {
             pairs.emplace_back(std::make_pair(hm.idToIndex(split[0].c_str()), hm.idToIndex(split[1].c_str())));
         }
     }
