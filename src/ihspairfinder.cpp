@@ -20,6 +20,8 @@
 #include "ihspairfinder.hpp"
 #include "ehh.hpp"
 #include "ihspairjob.hpp"
+#include <random>
+#include <chrono>
 
 IhsPairFinder::IhsPairFinder(const HapMap* hm, double cutoff, double minMaf, double scale, unsigned long long window, std::size_t maxBreadth)
     : m_hm(hm)
@@ -56,11 +58,18 @@ std::size_t IhsPairFinder::numPairs()
     return ret;
 }
 
-IhsPairJob* IhsPairFinder::calcRange(std::size_t start, std::size_t end)
+IhsPairJob* IhsPairFinder::calcRange(std::size_t start, std::size_t end, int random_range)
 {
     std::vector<std::pair<std::size_t, std::size_t>> pairs;
     IhsPairJob *job = new IhsPairJob(start, end);
     static unsigned long long total_pairs = 0.0;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> rand(1, random_range);
+    static double total_time;
+    decltype(std::chrono::high_resolution_clock::now()) start_time;
+    decltype(std::chrono::high_resolution_clock::now()) end_time;
+    bool random_dist = (random_range > 1) ? true : false;
     #pragma omp parallel shared(start, end, pairs)
     {
         EhhPairFinder pf(m_hm, m_cutoff, m_minMaf, m_scale, m_maxBreadth);
@@ -75,7 +84,7 @@ IhsPairJob* IhsPairFinder::calcRange(std::size_t start, std::size_t end)
                 unsigned long long focus2pos = m_hm->physicalPosition(focus2);
                 while (focus2pos-focus1pos < m_window)
                 {
-                    if (pf.passesAf(focus1, focus2))
+                    if (pf.passesAf(focus1, focus2) && (random_dist && rand(gen) == 1))
                         pairs.push_back({focus1,focus2});
                     ++focus2;
                     if (focus2 >= m_hm->numSnps())
@@ -84,6 +93,7 @@ IhsPairJob* IhsPairFinder::calcRange(std::size_t start, std::size_t end)
                 }
             }
             std::cout << "Calculating " << pairs.size() << " pairs for range " << start << "-" << end << std::endl;
+            start_time = std::chrono::high_resolution_clock::now();
         } // implicit barrier
         #pragma omp for schedule(dynamic,1)
         for(auto i = pairs.begin(); i < pairs.end(); ++i)
@@ -99,6 +109,10 @@ IhsPairJob* IhsPairFinder::calcRange(std::size_t start, std::size_t end)
         }
         #pragma omp single
         {
+            end_time = std::chrono::high_resolution_clock::now();
+            double time = std::chrono::duration<double, std::milli>(end_time-start_time).count();
+            total_time += time;
+            std::cout << "Calculation time: " << start << "-" << end << " took " << time << "ms. Total time: " << total_time << "ms." << std::endl;
             total_pairs += job->size();
             std::cout << "Calculated: " << job->size() << ". Total pairs: " << total_pairs << std::endl;
         }

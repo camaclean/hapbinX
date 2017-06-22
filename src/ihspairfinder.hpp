@@ -29,7 +29,7 @@ class IhsPairFinder
 {
 public:
     IhsPairFinder(const HapMap* hm, double cutoff, double minMaf, double scale, unsigned long long window, std::size_t maxBreadth);
-    IhsPairJob* calcRange(std::size_t start, std::size_t end);
+    IhsPairJob* calcRange(std::size_t start, std::size_t end, int random_range);
     void add(const std::vector<EHHPair>& v);
     std::size_t numPairs();
     std::vector<EHHPair> results() const { return m_results; }
