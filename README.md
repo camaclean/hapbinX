@@ -79,7 +79,7 @@ The hap files (`--hap`), containing phased haplotypes, should be in IMPUTE [hap 
 
 The map files (`--map`) should be in the same format as used by [Selscan](https://github.com/szpiech/selscan) with one row per variant and four space-separated columns specifiying chromosome, locus ID, genetic position and physical position.
 
-The list file comprises three tab-separated columns: Chromosome, variant 1 location, variant 2 location.
+The list file comprises two tab or space-separated columns specifying the ids of each variant pair. The ids corresponding to those listed in the second column of the map file.
 
 ### Output file formats ###
 
